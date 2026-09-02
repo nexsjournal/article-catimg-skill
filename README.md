@@ -10,7 +10,9 @@
 
 Article Cat Illustrations 是一个 Codex Skill，用来指导 AI Agent 为中文文章、帖子、博客、Notion 文档和方法论内容生成正文配图。
 
-方法论改编自 [ian-xiaohei-illustrations](https://github.com/helloianneo/ian-xiaohei-illustrations)（MIT），视觉 IP 从"小黑"替换为个人三花猫 IP：一只黑+橘棕+白三色毛、浅绿圆眼、永远冷淡脸的猫。猫不是萌宠、不是吉祥物，而是一只正在认真参与系统运转的"工牌猫"——严肃、冷静，但干的活有点荒诞。
+方法论改编自 [ian-xiaohei-illustrations](https://github.com/helloianneo/ian-xiaohei-illustrations)（MIT），视觉 IP 从"小黑"替换为个人三花猫 IP。
+
+**画风与原版小黑完全一致：极简黑白线稿 + 红蓝橙手写笔标记。** 猫不是写实动物，而是和原版小黑同级的**空心简笔画角色**——细黑线勾出的椭圆身体、内部留白、小黑点眼、尖耳、火柴棍腿、冷淡脸，背上用一小块黑色色块表示三花猫。严肃、冷静，但干的活有点荒诞。
 
 与原版的一个重要区别：**生图不再依赖内置 `image_gen`，而是通过 qiyuan-image 技能（qwen-image API，qiyuanapi.cc 中转）完成**（`generate` 文生图 / `edit` 图生图），并且内置了针对 qwen-image 的实测调参经验。
 
@@ -98,8 +100,9 @@ Use $article-cat-illustrations 为"信任不是喊出来的，而是一块证据
 ## 注意事项
 
 - 图片里的中文文字越短越稳定；qwen-image 有重复标注的倾向，模板里已内置防重复约束。
-- 猫必须承担核心动作；如果去掉猫画面仍然完全成立，说明猫太装饰了。
-- 毛色必须黑+橘棕+白三花、眼睛浅绿；跑偏时用 `edit` 命令以 `assets/cat/cat-01.png` 为参考图重做。
+- 猫必须是**空心简笔画**（身体留白、小黑点眼、火柴棍腿）；被画成写实猫时用 `edit` 执行"风格跑偏成写实时"指令拉回黑白线稿。
+- 中文标注要短、要少（≤5 处），qwen-image 有连笔糊字倾向，模板已内置防重复/防连笔约束。
+- 画风只有 4 种颜色：黑（线稿）、红、蓝（批注）、橙（箭头），不要出现第五种。
 - 不要把 `QIYUAN_API_KEY` 写进仓库。
 
 ## License

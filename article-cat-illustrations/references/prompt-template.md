@@ -1,89 +1,75 @@
 # 生图提示词模板
 
-每张图单独生成，通过 qiyuan-image 技能调用 qwen-image API。根据正文内容替换变量，不要把多张图拼在一起。
+每张图单独生成，通过 qiyuan-image 技能调用 qwen-image API。根据正文内容替换变量。
+
+**重要：qwen-image 对中文提示词还原度远高于英文长提示词。下面的模板以中文为主。**
 
 ## 文生图（默认路径）
 
 ```bash
 node ~/.codex/skills/qiyuan-image/qiyuan-image.mjs generate \
-  --prompt "见下方模板" \
+  --prompt "<下方模板>" \
   --out assets/<article-slug>-illustrations/0N-topic-name.png \
   --size 1664x928
 ```
 
-```text
-Generate one standalone 16:9 horizontal Chinese article illustration.
-
-Visual DNA:
-Pure white background. Minimalist hand-drawn line art. Slightly wobbly pen lines. Lots of empty white space. Sparse red/orange/blue handwritten Chinese annotations. Clean absurd product-sketch feeling. No gradients, no shadows, no paper texture, no complex background, no commercial vector style, no PPT infographic look, no cute mascot poster, no children's illustration, no realistic UI.
-
-Recurring IP character required:
-A tortoiseshell (three-color) cat: black, ginger/tan and white fur patches; a white blaze running down the nose and a white muzzle; lime-green round eyes; pointed dark ears; short white paws. Deadpan, aloof, slightly grumpy expression, like a serious system operator who happens to be a cat. The cat must perform the core conceptual action, not decorate the scene. Keep the cat serious and deadpan, NOT cute, NOT chibi, NOT sparkly.
-
-Theme:
-{正文配图主题}
-
-Structure type:
-{结构类型：Workflow / 系统局部 / 前后对比 / 角色状态 / 概念隐喻 / 方法分层 / 地图路线 / 小漫画分镜}
-
-Core idea:
-{这张图要表达的核心意思}
-
-Composition:
-{具体画面：猫在哪里、正在做什么、主要物件是什么、信息如何流动}
-
-Suggested elements:
-{元素1} / {元素2} / {元素3} / {元素4}
-
-Chinese handwritten labels:
-{标注词1} / {标注词2} / {标注词3} / {标注词4} / {可选标注词5}
-
-Color use:
-Black, ginger and white for the cat. Black for main line art and structure. Orange for main flow/path/arrows. Red only for key warnings/problems/results. Blue only for secondary notes or feedback/system state.
-
-Constraints:
-One image explains only one core structure. Keep the main subject around 40%-60% of the canvas. Preserve at least 35% blank white space. Use at most 5-8 short handwritten Chinese labels. Do not write a title in the top-left corner. Do not write the structure type on the image. Do not make it a formal diagram, course slide, or dense explainer. Do not copy prior examples or reuse known case compositions unless explicitly requested; invent a fresh visual metaphor for this specific article. It should be clear but not instructional, interesting but not childish, strange but clean.
-```
-
-注意：当前 qiyuan-image CLI 的 generate 子命令传 `--negative` 会报错（form.append bug），请勿在 generate 中传该参数；negative 内容已并入提示词。
+### 提示词模板（整段复制，替换花括号变量）
 
 ```text
-cute, chibi, kawaii, mascot, sparkle eyes, cartoon baby face, bow, collar, ribbon, PPT, infographic, 3D render, photo, gradient, shadow, paper texture
+极简手绘风中文文章配图，16:9 横版。风格要求（严格遵守）：
+
+1. 纯白背景，整张画面全白，无阴影、无渐变、无纸张纹理、无照片感。
+2. 只有黑色细线稿（圆珠笔手绘感，线条轻微抖动，约2px粗细），角色和物体的内部留白不填充，不用任何写实细节。
+3. 除黑色外，只有三种颜色：红色、蓝色、橙色手写笔标记。橙色只画箭头和路径，红色和蓝色只写批注文字。
+4. 中文手写批注最多5处，每处2-6个字，每个词单独写、字与字分开、清晰可读，绝不连笔、绝不重叠、绝不糊在一起。
+5. 画面主体只占一半左右，大量留白。不要标题，不要左上角写结构类型名，不要任何说明性大段文字。
+
+固定角色（每张图必须有，承担核心动作，不是装饰）：
+一只简笔画猫：黑色细线勾出的椭圆身体，身体内部留白不填色，头顶两个小三角耳朵，两个小黑点眼睛，无嘴，表情冷淡呆滞。背上一小块黑色填充色块表示三花猫。细线火柴棍腿和尾巴。它要像简笔画小人一样认真地干活，绝对不要画成写实猫咪、不要毛发纹理、不要绿色眼睛、不要萌感。
+
+画面内容：
+{具体画面：猫在哪里、正在做什么、主要物件（用简笔画纸箱/抽屉/漏斗/机器/门等低科技物件）、信息如何流动}
+
+文字标注（只写这些，不要多写，每个词位置独立）：
+{标注词1，红色或黑色} / {标注词2，蓝色} / {标注词3，橙色箭头} / {标注词4，红色}
+
+参考构图气质（只参考线条密度和简略度，不要照抄物件）：
+像白纸上用圆珠笔随手画的怪诞产品草图，角色是简笔画小生物，物件是纸箱抽屉漏斗机器，箭头是橙色手绘，批注是红蓝手写小字。
 ```
 
-## 角色一致性 / 局部编辑（edit 命令）
+### 变量填充原则
 
-猫的毛色或表情偏离参考猫，或需要局部修改时，用真实猫照做参考图：
+- `{具体画面}` 一句话说清"谁在哪做什么"，不超过 3 个物件。物件从池子里选：纸箱、抽屉、漏斗、旧机器、门、井、梯子、邮筒、秤、传送带、黑盒、怪工位。
+- 标注词控制在 4-5 个以内；颜色在词后面注明，避免模型全用黑色。
+- 结构类型（Workflow/前后对比等）**不要写进提示词**，只体现在画面里。
+
+## 图像编辑（局部修改 / 角色一致性）
 
 ```bash
 node ~/.codex/skills/qiyuan-image/qiyuan-image.mjs edit \
-  --image <skill-dir>/assets/cat/cat-01.png \
-  --prompt "保持参考图中这只三花猫（黑橘白三色毛、浅绿圆眼、冷淡脸）的外貌特征完全一致，把它放进目标构图：<目标构图描述>。纯白背景，黑色手绘线稿风格，大量留白，少量红橙蓝中文手写批注，16:9 横版。" \
-  --out assets/<article-slug>-illustrations/0N-topic-name.png \
+  --image <图> \
+  --prompt "<编辑指令>" \
+  --out <目标文件>.png \
   --strength 0.6
 ```
 
-去掉左上角标题：
+去掉左上角标题 / 多余文字：
 
 ```text
-Edit the provided image. Remove only the handwritten title "{要删除的文字}" and its underline from the top-left corner. Fill that area with the same clean white background, matching the surrounding blank paper. Preserve everything else exactly: the cat, labels, paths, line style, composition, aspect ratio, and image quality. Do not add any new text or objects.
+编辑这张图：只删除"{要删除的文字}"，用纯白背景填平该区域，与周围白纸一致。其余内容（角色、线条、标注、构图、比例）完全保持不变，不要新增任何文字或物件。
 ```
 
-增强角色参与感：
+风格跑偏成写实时：
 
 ```text
-Regenerate this illustration with the same core meaning and simple layout, but make the tortoiseshell cat more central to the conceptual action. The cat should be doing the strange work that explains the idea, not standing beside the diagram. Keep it clean, sparse, hand-drawn, and not cute.
+把这张图重新画成极简黑白线稿风格：所有物体和角色变成黑色细圆珠笔手绘线，内部留白不填充，去掉所有阴影、渐变、材质纹理和写实细节，背景变纯白，只保留红色、蓝色、橙色手写批注。保持构图和文字位置不变。
 ```
-
-## strength 调参经验
-
-- 0.4-0.5：构图基本跟随提示词，猫只取参考图的部分特征。
-- 0.6：默认起点，猫特征与构图平衡。
-- 0.7-0.85：猫非常接近参考图，但构图会被参考图带偏。
 
 ## 实测调参经验（qwen-image）
 
-- 提示词过长/结构太复杂（Theme/Structure type/Core idea 分节 + 大量英文约束）时，模型容易画成写实素描或照片，且会幻觉出大段中文。**收敛成一段自然语言描述 + 明确 "hand-drawn ink sketch on pure white paper, not a photo, no camera frame, no dark edges"**，扁平手绘感会稳定很多。
-- 中文标注必须写"exactly ONE annotation, do not repeat"，否则模型会把同一句话在每个元素旁重复多遍。
-- 纯白背景要在提示词里强调 "entire canvas edge to edge pure white, no vignette, no room, no photo"，否则画面右侧/边缘常出现暗色"照片边"。
-- 猫的长相（三花毛色、绿眼、冷淡脸）模型还原度很高，文生图即可；edit 参考图主要用来修局部，不必作为默认路径。
+1. **中文提示词 > 英文长提示词**：英文分节模板（Theme/Structure/Composition/Constraints 一大段）会让模型跑向写实素描；中文一段式约束 + 明确的"简笔画/留白不填色"描述，能稳定还原极简风。
+2. **猫的简略度要反复强调**：模型默认把"猫"画成写实猫。必须写"椭圆身体、内部留白、小黑点眼睛、火柴棍腿、不要毛发纹理、不要绿眼睛"。参考原版小黑：它的身体就是一个空心线稿豆子，猫也一样。
+3. **文字糊在一起**：qwen-image 写中文容易连笔糊团。要写"每个词单独写、字与字分开、清晰可读"，且标注词总数 ≤5。错字多就减少标注重生成，或 edit 局部修。
+4. **纯白背景**：强调"整张画面全白，无阴影无渐变无照片感"，否则边缘易出现暗色/纸纹。
+5. **不要用 `--negative`**：当前 qiyuan-image CLI 的 generate 子命令传该参数会报 `form.append is not a function`（源码 bug）。负面约束直接写进提示词。
+6. **edit 修风格比重生成稳**：构图对了但画风写实时，用 edit + "重新画成极简黑白线稿" 比整图重生成保留构图更好。
